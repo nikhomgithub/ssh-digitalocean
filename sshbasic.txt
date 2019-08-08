@@ -1,0 +1,169 @@
+https://www.youtube.com/watch?v=hQWRp-FdTpc
+Server side
+
+ssh = secure shell 
+use for communication between server-linux and client-linux
+
+install
+sudo apt-get install openssh-server
+
+start 
+service ssh start
+
+check
+service ssh status
+
+stop
+service ssh stop
+
+check ip address
+ifconfig
+
+we can config at
+/etc/ssh/sshd_config
+before config must make a backup
+cp /etc/ssh/sshd_config etc/ssh/ssh_config.bak
+
+
+
+=======================================
+There are 3 way to create connection with ssh server
+1. password
+2. Public/Private Key Pair
+3. Host Based
+
+
+1. password
+===========
+at server side turn on ssh-server
+~$ service ssh start
+-----------------------------------------
+to access for ssh server
+$ssh nikhom@192.168.1.106 
+and enter password
+exit 
+
+------------------------------------------
+2.Public/Private Key Pair
+=========================
+at server side turn on ssh-server
+~$ service ssh start
+
+at client side creat key (piblic(send to server) / private(keep in client)
+
+ssh-keygen mean to create keys or use ssh-keygen -t rsa -b 4096 for more secure
+
+ssh-add ~/.ssh/id_rsa mean to add client key before sending to server
+
+ssh-copy-id nikhom@192.168.1.103 mean to copy public key to server, done !!!
+
+ssh nikhom@192.168.1.103 mean connect to server
+
+-------------------------------------------
+
+To copy file to server with keys
+
+scp ~/test/supera.txt nikhom@192.168.1.103:~/servertest
+
+============================================
+3. Public/Private Key Pair for DigitalOceanLike
+dockerbase/openssh-server = DigitalOcean
+
+at client side
+ssh-keygen -t rsa mean to create another key gen
+/home/nikhom/.ssh/id_rsa_do mean enter a file name in which to save the key (/home/nikhom/.ssh/id_rsa): 
+id_rsa_do  id_rsa_do.pub mean what we get new key in .ssh
+cat id_rsa_do.pub mean to display public key and copy it
+ssh-add ~/.ssh/id_rsa_do mean to add new key to ssh of client
+
+at Server
+sudo apt get update
+sudo apt get upgrade
+
+adduser mee mean creat a new user 
+usermod -aG sudo mee mean put new user to sudo group
+id mee mean cheak id mee , we got 27(sudo) as admin user
+
+login mee mean login in mee
+mkdir .ssh
+touch .ssh/authorized_keys mean to create authorized_keys under mee
+past client id_rsa_do.pub to authorized_keys by using nano
+cat authorized_keys mean to check new key in file
+~/.ssh$ sudo chmod -R 700 . mean to change file permission to 700
+
+sudo -i mean to login as root user
+service ssh start mean to start ssh-server by root user
+ifconfig mean to check ip address of server
+
+at client side
+ssh mee@172.17.0.2 mean we can login to server as mee user
+
+scp ~/test/b.txt mee@172.17.0.2:~/servertest mean we can scp file to server to test
+
+at client side 
+ssh mee@172.17.0.2 mean to login to server
+sudo -i mean change to root at server
+
+for security purpose we do not allow rootlogin to server 
+cd /etc/ssh
+nano ssh_config
+PermitRootLogin no mean not allow root login from client
+sudo systemctl reload sshd mean might not work just restart at server service ssh stop/start under root account
+
+tip
+sudo chown -R mee:mee /home/folder mean to change owner of folder to mee
+
+==============================================
+
+For more on DigitalOcean
+https://www.youtube.com/watch?v=hQWRp-FdTpc
+
+at DigitalOcean Server
+
+install apache to test web server service
+sudo apt install apache2 -y
+after install apache , it will provide default start page at 
+/var/www/html/index.html
+
+install node+react application to test web server servcie
+git -version mean to see version of git in DigitalOcean
+
+connect ssh server with github
+crete key at ssh server
+ssh-keygen -t rsa mean put location at /home/mee/.ssh/id_rsa_github
+copy the key from ~/.ssh/id_rsa_github.pub
+
+at github profile > settings > SSH and GPG keys > new SSH & past key 
+
+eval `ssh-agent -s` mean to activate ssh agent to create Agent pid 1111
+
+ssh-add /home/mee/.ssh/id_rsa_github mean add new keys to .ssh 
+
+let clone React Application with SSH  with no backend-node
+git clone https://github.com/bradtraversy/react_otka_auth.git
+
+cd react_otka_auth mean to enter folder from clone from github
+
+install node & npm to server
+sudo apt-get install -y node.js
+
+npm install mean to install all dependency 
+
+npm start mean run react app server 
+
+go check at crhome at port :3000 (defalut port) this is for dev not for production
+
+deploy for production by build react as static asset and put at apache
+remove exiting index.html of apache
+rm /var/www/html/index.html
+
+npm run build mean create index.html from react 
+sudo mv -v /home/mee/react_otka_auth/build/*  /var/www/html/
+
+you can put your registered domain to DigitalOcean by
+Networking Add a domain
+DNS records value = ns1.DigitalOcean.com 
+            value = ns2.DigitalOcean.com
+            value = ns3.DigitalOcean.com
+
+
