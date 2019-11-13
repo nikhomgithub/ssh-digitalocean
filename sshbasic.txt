@@ -130,7 +130,10 @@ git -version mean to see version of git in DigitalOcean
 
 connect ssh server with github
 crete key at ssh server
-ssh-keygen -t rsa mean put location at /home/mee/.ssh/id_rsa_github
+ssh-keygen -t rsa        mean to create a key by default it is in /home/mee/.ssh/id_rsa
+  but we can put in new location 
+/home/mee/.ssh/id_rsa_github
+
 copy the key from ~/.ssh/id_rsa_github.pub
 
 at github profile > settings > SSH and GPG keys > new SSH & past key 
